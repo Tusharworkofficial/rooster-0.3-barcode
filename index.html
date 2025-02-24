@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Pro</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Fonts: Lato -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- JsBarcode -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <!-- QuaggaJS -->
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <!-- jsQR for QR Code Scanning -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- XLSX for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- QRCode.js for QR code generation -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <!-- Chart.js for Reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #EFF2F7;
+            color: #0F1828;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+
+
+
+        .settings-section .card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-section .form-check {
+            margin-bottom: 10px;
+        }
+
+        .form-check-input {
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            font-weight: 400;
+            color: #0F1828;
+        }
+
+
+
+
+
+        .navbar {
+            background-color: #0F1828;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            color: #C61B37;
+            font-size: 1.8rem;
+        }
+
+        .nav-link {
+            color: #FFFFFF !important;
+            font-weight: 400;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #C61B37 !important;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        .hero {
+            background-color: #FFFFFF;
+            color: #0F1828;
+            padding: 100px 0;
+            margin-top: 70px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .hero .btn {
+            background-color: #C61B37;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            color: #FFFFFF;
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero .btn:hover {
+            background-color: #A3152D;
+            color: #FFFFFF;
+        }
+
+        .features {
+            padding: 60px 0;
+            background-color: #EFF2F7;
+        }
+
+        .feature-item {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-item i {
+            font-size: 3rem;
+            color: #C61B37;
+            margin-bottom: 15px;
+        }
+
+        .feature-item h4 {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .how-it-works {
+            padding: 60px 0;
+            background-color: #EFF2F7;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .step {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+        }
+
+        .step i {
+            font-size: 2.5rem;
+            color: #C61B37;
+        }
+
+        .step h5 {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .benefits {
+            padding: 60px 0;
+            background-color: #EFF2F7;
+        }
+
+        .benefits h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-top: 70px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h2,
+        h3 {
+            color: #0F1828;
+            font-weight: 900;
+        }
+
+        .btn-custom {
+            background-color: #C61B37;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #FFFFFF;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-custom:hover {
+            background-color: #A3152D;
+            color: #FFFFFF;
+        }
+
+        .btn-secondary-custom {
+            background-color: #0F1828;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #FFFFFF;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary-custom:hover {
+            background-color: #C61B37;
+            color: #FFFFFF;
+        }
+
+        .btn-action {
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-warning-custom {
+            background-color: #0F1828;
+            border: none;
+            color: #FFFFFF;
+        }
+
+        .btn-danger-custom {
+            background-color: #C61B37;
+            border: none;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger-custom:hover {
+            background-color: #A3152D;
+            color: #FFFFFF;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #0F1828;
+            padding: 10px;
+            transition: border-color 0.3s ease;
+            background: #FFFFFF;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control:focus {
+            border-color: #C61B37;
+            box-shadow: 0 0 5px rgba(198, 27, 55, 0.5);
+        }
+
+        #barcode,
+        #qrcode {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .code-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .code-container svg,
+        .code-container canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #0F1828;
+            padding: 10px;
+        }
+
+        .code-container .btn-secondary-custom {
+            margin-top: 15px;
+            width: 150px;
+        }
+
+        #scanner-container {
+            width: 100%;
+            max-width: 640px;
+            height: 400px;
+            background: #0F1828;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 25px auto;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        #scanner-container:hover {
+            box-shadow: 0 5px 15px rgba(198, 27, 55, 0.3);
+        }
+
+        #scanner-container video,
+        #scanner-container canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #material-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        #scanned-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            display: block;
+        }
+
+        .table-responsive {
+            margin-top: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: #FFFFFF;
+        }
+
+        .table thead th {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            border: none;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+            background-color: #FFFFFF;
+        }
+
+        .table tbody tr:hover {
+            background-color: #C61B37;
+            color: #FFFFFF;
+        }
+
+        .table td,
+        .table th {
+            max-width: 150px;
+            /* Limit column width */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .table td.actions {
+            max-width: 120px;
+            white-space: normal;
+            /* Allow buttons to wrap */
+        }
+
+        @media (max-width: 768px) {
+
+            .table td,
+            .table th {
+                font-size: 0.8rem;
+                /* Reduce font size on mobile */
+                padding: 10px;
+                /* Adjust padding */
+            }
+
+            .table td.actions {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                max-width: 100px;
+            }
+
+            .btn-action {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+        footer {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            padding: 3rem 2rem;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        footer .footer-brand i {
+            margin-right: 10px;
+            color: #C61B37;
+            font-size: 1.8rem;
+        }
+
+        footer .footer-links,
+        footer .footer-contact {
+            flex: 1;
+            min-width: 200px;
+            margin: 0 1rem;
+        }
+
+        footer h5 {
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #C61B37;
+        }
+
+        footer .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #FFFFFF;
+        }
+
+        .modal-header {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 700;
+        }
+
+        .inventory-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        #search-inventory {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            margin: 0;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #chatbot-header {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #C61B37;
+        }
+
+        #chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #FFFFFF;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #0F1828;
+            color: #FFFFFF;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: #EFF2F7;
+            color: #0F1828;
+            border: 1px solid #0F1828;
+            align-self: flex-start;
+        }
+
+        #chatbot-input-area {
+            display: flex;
+            padding: 10px;
+            background: #FFFFFF;
+            border-top: 1px solid #0F1828;
+        }
+
+        #chatbot-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #0F1828;
+            border-radius: 5px;
+            outline: none;
+            background: #FFFFFF;
+        }
+
+        #chatbot-input:focus {
+            border-color: #C61B37;
+            box-shadow: 0 0 5px rgba(198, 27, 55, 0.5);
+        }
+
+        #chatbot-send {
+            background-color: #C61B37;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #chatbot-send:hover {
+            background-color: #A3152D;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #C61B37;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        #chatbot-container.hidden {
+            transform: translateY(100%);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #main-content {
+            min-height: 50vh;
+            padding-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-collapse {
+                background-color: #0F1828;
+            }
+
+            .nav-link {
+                padding: 0.8rem 1rem;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            #scanner-container {
+                height: 300px;
+            }
+
+            /* Existing .table-responsive styles (keep these as they are) */
+            .table-responsive {
+                margin-top: 25px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+                background: #FFFFFF;
+            }
+
+            /* Add or update this media query for mobile devices */
+            @media (max-width: 768px) {
+                .table-responsive {
+                    overflow-x: auto;
+                    /* Enable horizontal scrolling */
+                    -webkit-overflow-scrolling: touch;
+                    /* Smooth scrolling on iOS devices */
+                    white-space: nowrap;
+                    /* Prevent text wrapping to ensure columns stay in a single row */
+                }
+
+                .table {
+                    width: auto;
+                    /* Allow table to expand beyond viewport width */
+                    min-width: 100%;
+                    /* Ensure table takes at least full width */
+                }
+
+                .table td,
+                .table th {
+                    min-width: 100px;
+                    /* Set a minimum width for columns to ensure readability */
+                    padding: 8px;
+                    /* Adjust padding for compactness */
+                }
+
+                .table td.actions {
+                    min-width: 120px;
+                    /* Ensure actions column has enough space */
+                    white-space: normal;
+                    /* Allow buttons to wrap if needed */
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="index.html"><i class="fas fa-box-open"></i> Inventory Pro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#generate">Generate</a></li>
+                <li class="nav-item"><a class="nav-link" href="#scan">Scan</a></li>
+                <li class="nav-item"><a class="nav-link" href="#inventory">Inventory</a></li>
+                <li class="nav-item"><a class="nav-link" href="#notifications">Notifications</a></li>
+                <li class="nav-item"><a class="nav-link" href="#reports">Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="quality.html">Quality</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container mt-5 pt-5">
+        <!-- Dynamic content will be loaded here -->
+    </main>
+
+    <!-- Enhanced Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-box-open"></i> Inventory Pro
+            </div>
+            <div class="footer-links">
+                <h5>Quick Links</h5>
+                <a href="#home">Home</a>
+                <a href="#generate">Generate Barcode & QR</a>
+                <a href="#scan">Scan Barcode</a>
+                <a href="#inventory">Inventory List</a>
+                <a href="#notifications">Notifications</a>
+                <a href="#reports">Reports</a>
+            </div>
+            <div class="footer-contact">
+                <h5>Contact Us</h5>
+                <a href="mailto:support@inventorypro.com">support@inventorypro.com</a>
+                <a href="tel:+1234567890">+1 (234) 567-890</a>
+                <a href="#">123 Business St, Tech City</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Inventory Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Material</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-form">
+                        <div class="form-group">
+                            <label>Material ID</label>
+                            <input type="text" class="form-control" id="edit_material_id" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Material Name</label>
+                            <input type="text" class="form-control" id="edit_material_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="date" class="form-control" id="edit_expiry_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Batch Number</label>
+                            <input type="text" class="form-control" id="edit_batch_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier Details</label>
+                            <input type="text" class="form-control" id="edit_supplier_details" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" class="form-control" id="edit_quantity" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quality Status</label>
+                            <select class="form-control" id="edit_quality_status">
+                                <option value="Pass">Pass</option>
+                                <option value="Fail">Fail</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quality Details</label>
+                            <textarea class="form-control" id="edit_quality_details"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Quality Tester</label>
+                            <input type="text" class="form-control" id="edit_quality_tester">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-custom" id="save-changes">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Interface -->
+    <button id="chatbot-toggle" title="Chat with Inventory Assistant"><i class="fas fa-robot"></i></button>
+    <div id="chatbot-container" class="hidden">
+        <div id="chatbot-header">Inventory Assistant</div>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-area">
+            <input type="text" id="chatbot-input" placeholder="Ask about inventory...">
+            <button id="chatbot-send">Send</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries and Custom Script -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // IndexedDB Setup
+        let db;
+        const request = indexedDB.open("inventoryDB", 2);
+
+        request.onupgradeneeded = function (event) {
+            db = event.target.result;
+            const objectStore = db.createObjectStore("materials", { keyPath: "material_id" });
+            objectStore.createIndex("expiry_date", "expiry_date", { unique: false });
+            objectStore.createIndex("quantity", "quantity", { unique: false });
+        };
+
+        request.onsuccess = function (event) {
+            db = event.target.result;
+            loadSection('home');
+            checkNotifications();
+        };
+
+        request.onerror = function (event) {
+            alert("Database error: " + event.target.errorCode);
+            loadSection('home');
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (!document.getElementById("main-content").innerHTML.trim()) {
+                loadSection('home');
+            }
+        });
+
+        // Database Functions
+        function addMaterial(material) {
+            const transaction = db.transaction(["materials"], "readwrite");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.add(material);
+            request.onsuccess = () => {
+                console.log("Material added");
+                checkNotifications();
+            };
+            request.onerror = () => console.log("Error adding material");
+        }
+
+        function getMaterial(material_id, callback) {
+            const transaction = db.transaction(["materials"], "readonly");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.get(material_id);
+            request.onsuccess = () => callback(request.result);
+        }
+
+        function getAllMaterials(callback) {
+            const transaction = db.transaction(["materials"], "readonly");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.getAll();
+            request.onsuccess = () => callback(request.result);
+        }
+
+        function updateMaterial(material) {
+            const transaction = db.transaction(["materials"], "readwrite");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.put(material);
+            request.onsuccess = () => {
+                console.log("Material updated");
+                checkNotifications();
+            };
+        }
+
+        function deleteMaterial(material_id) {
+            const transaction = db.transaction(["materials"], "readwrite");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.delete(material_id);
+            request.onsuccess = () => {
+                loadSection('inventory');
+                checkNotifications();
+            };
+        }
+
+        function deleteAllMaterials() {
+            const transaction = db.transaction(["materials"], "readwrite");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.clear();
+            request.onsuccess = () => {
+                loadSection('inventory');
+                checkNotifications();
+            };
+        }
+
+        // Add Quality Check to Material
+        function addQualityCheck(material_id, status, details, tester) {
+            const transaction = db.transaction(["materials"], "readwrite");
+            const objectStore = transaction.objectStore("materials");
+            getMaterial(material_id, (material) => {
+                if (!material.quality_checks) material.quality_checks = [];
+                material.quality_checks.push({
+                    status: status,
+                    details: details,
+                    tester: tester,
+                    timestamp: new Date().toISOString()
+                });
+                objectStore.put(material);
+                if (status === "Fail") {
+                    alert(`Quality Check Failed for ${material.material_name}: ${details}`);
+                }
+            });
+        }
+
+        // Navigation Handler
+        // Navigation Handler
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                // Allow normal navigation for dashboard.html and quality.html
+                if (href === 'dashboard.html' || href === 'quality.html') {
+                    return; // Do nothing, let the browser navigate to the new page
+                }
+                // For other links, use the section loading logic
+                e.preventDefault();
+                const section = href.substring(1);
+                loadSection(section);
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.navbar-collapse').classList.remove('show');
+                }
+            });
+        });
+
+        // Load Section Function
+        function loadSection(section) {
+            const mainContent = document.getElementById("main-content");
+            mainContent.style.display = "block";
+            switch (section) {
+                case 'home':
+                    mainContent.innerHTML = `
+                        <section class="hero">
+                            <div class="hero-content">
+                                <h1>Streamline Your Inventory Management with Barcodes</h1>
+                                <p>Generate, scan, and manage your inventory effortlessly with our powerful barcode solution.</p>
+                                <a href="#generate" class="btn btn-primary">Get Started</a>
+                            </div>
+                        </section>
+                        <section class="features">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4 feature-item">
+                                        <i class="fas fa-barcode"></i>
+                                        <h4>Generate Barcodes</h4>
+                                        <p>Create custom barcodes for your materials with ease.</p>
+                                    </div>
+                                    <div class="col-md-4 feature-item">
+                                        <i class="fas fa-qrcode"></i>
+                                        <h4>Scan Barcodes</h4>
+                                        <p>Quickly scan and retrieve material details on the go.</p>
+                                    </div>
+                                    <div class="col-md-4 feature-item">
+                                        <i class="fas fa-list-alt"></i>
+                                        <h4>Manage Inventory</h4>
+                                        <p>Keep track of your stock effortlessly and efficiently.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="how-it-works">
+                            <div class="container">
+                                <h2 class="text-center">How It Works</h2>
+                                <div class="row">
+                                    <div class="col-md-4 step">
+                                        <i class="fas fa-pencil-alt fa-3x"></i>
+                                        <h5>1. Enter Material Details</h5>
+                                        <p>Input your material's information seamlessly.</p>
+                                    </div>
+                                    <div class="col-md-4 step">
+                                        <i class="fas fa-barcode fa-3x"></i>
+                                        <h5>2. Generate Barcode</h5>
+                                        <p>Create a unique barcode for each item instantly.</p>
+                                    </div>
+                                    <div class="col-md-4 step">
+                                        <i class="fas fa-search fa-3x"></i>
+                                        <h5>3. Scan to Manage Inventory</h5>
+                                        <p>Scan barcodes to update and track your stock.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="benefits">
+                            <div class="container">
+                                <h3>Why Choose Inventory Pro?</h3>
+                                <p class="text-center">Save time, reduce errors, and boost efficiency with our cutting-edge barcode solution.</p>
+                            </div>
+                        </section>
+                    `;
+                    break;
+                case 'generate':
+                    mainContent.innerHTML = `
+                       <div class="card">
+    <h3>Generate Barcode & QR Code</h3>
+    <!-- Settings Section -->
+    <div class="settings-section mb-4">
+        <button class="btn btn-secondary-custom" type="button" data-toggle="collapse" data-target="#settingsCollapse" aria-expanded="false" aria-controls="settingsCollapse">
+            <i class="fas fa-cog"></i> Settings
+        </button>
+        <div class="collapse mt-3" id="settingsCollapse">
+            <div class="card p-3">
+                <h5>Customize Form Fields</h5>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleMaterialId" checked>
+                    <label class="form-check-label" for="toggleMaterialId">Material ID</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleMaterialName" checked>
+                    <label class="form-check-label" for="toggleMaterialName">Material Name</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleExpiryDate" checked>
+                    <label class="form-check-label" for="toggleExpiryDate">Expiry Date</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleBatchNumber" checked>
+                    <label class="form-check-label" for="toggleBatchNumber">Batch Number</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleSupplierDetails" checked>
+                    <label class="form-check-label" for="toggleSupplierDetails">Supplier Details</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleQuantity" checked>
+                    <label class="form-check-label" for="toggleQuantity">Quantity</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleWeight">
+                    <label class="form-check-label" for="toggleWeight">Weight</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleLocation">
+                    <label class="form-check-label" for="toggleLocation">Location</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleColor">
+                    <label class="form-check-label" for="toggleColor">Color</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Updated Form with Default Visible Fields -->
+    <form id="generate-form" class="mt-4">
+        <div class="form-group field-material-id">
+            <label>Material ID</label>
+            <input type="text" class="form-control" id="material_id" required>
+        </div>
+        <div class="form-group field-material-name">
+            <label>Material Name</label>
+            <input type="text" class="form-control" id="material_name" required>
+        </div>
+        <div class="form-group field-expiry-date">
+            <label>Expiry Date</label>
+            <input type="date" class="form-control" id="expiry_date" required>
+        </div>
+        <div class="form-group field-batch-number">
+            <label>Batch Number</label>
+            <input type="text" class="form-control" id="batch_number" required>
+        </div>
+        <div class="form-group field-supplier-details">
+            <label>Supplier Details</label>
+            <input type="text" class="form-control" id="supplier_details" required>
+        </div>
+        <div class="form-group field-quantity">
+            <label>Quantity</label>
+            <input type="number" class="form-control" id="quantity" required min="0">
+        </div>
+        <div class="form-group field-weight" style="display: none;">
+            <label>Weight (kg)</label>
+            <input type="number" class="form-control" id="weight" min="0" step="0.01">
+        </div>
+        <div class="form-group field-location" style="display: none;">
+            <label>Location</label>
+            <input type="text" class="form-control" id="location">
+        </div>
+        <div class="form-group field-color" style="display: none;">
+            <label>Color</label>
+            <input type="text" class="form-control" id="color">
+        </div>
+        <button type="submit" class="btn btn-custom">Generate</button>
+    </form>
+    <div class="row mt-4">
+        <div class="col-md-6 code-container">
+            <div id="barcode"></div>
+            <button class="btn btn-secondary-custom" id="print-barcode-btn" style="display:none;" onclick="printBarcode()">Print Barcode</button>
+        </div>
+        <div class="col-md-6 code-container">
+            <div id="qrcode"></div>
+            <button class="btn btn-secondary-custom" id="print-qrcode-btn" style="display:none;" onclick="printQRCode()">Print QR Code</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+                    `;
+                    setupFormToggles();
+
+                    document.getElementById("generate-form").addEventListener("submit", (e) => {
+                        e.preventDefault();
+                        const fields = {
+                            material_id: document.getElementById("toggleMaterialId").checked ? document.getElementById("material_id").value : null,
+                            material_name: document.getElementById("toggleMaterialName").checked ? document.getElementById("material_name").value : null,
+                            expiry_date: document.getElementById("toggleExpiryDate").checked ? document.getElementById("expiry_date").value : null,
+                            batch_number: document.getElementById("toggleBatchNumber").checked ? document.getElementById("batch_number").value : null,
+                            supplier_details: document.getElementById("toggleSupplierDetails").checked ? document.getElementById("supplier_details").value : null,
+                            quantity: document.getElementById("toggleQuantity").checked ? parseInt(document.getElementById("quantity").value) : null,
+                            weight: document.getElementById("toggleWeight").checked ? parseFloat(document.getElementById("weight").value) : null,
+                            location: document.getElementById("toggleLocation").checked ? document.getElementById("location").value : null,
+                            color: document.getElementById("toggleColor").checked ? document.getElementById("color").value : null
+                        };
+
+                        // Filter out null values for material object
+                        const material = Object.fromEntries(Object.entries(fields).filter(([_, v]) => v !== null));
+
+                        // Ensure material_id is present for database key if toggled on
+                        if (document.getElementById("toggleMaterialId").checked) {
+                            getMaterial(material.material_id, (existing) => {
+                                if (existing) {
+                                    alert("Material ID already exists!");
+                                } else {
+                                    addMaterial(material);
+                                    generateBarcode(material.material_id || Object.values(material).join('-')); // Fallback if Material ID is off
+                                    generateQRCode(material);
+                                    document.getElementById("print-barcode-btn").style.display = "block";
+                                    document.getElementById("print-qrcode-btn").style.display = "block";
+                                    document.getElementById("generate-form").reset();
+                                }
+                            });
+                        } else {
+                            // Generate a unique ID if Material ID is toggled off
+                            material.material_id = 'AUTO-' + Date.now();
+                            addMaterial(material);
+                            generateBarcode(material.material_id);
+                            generateQRCode(material);
+                            document.getElementById("print-barcode-btn").style.display = "block";
+                            document.getElementById("print-qrcode-btn").style.display = "block";
+                            document.getElementById("generate-form").reset();
+                        }
+                    });
+
+                // Call setupFormToggles after loading the generate section
+                case 'generate':
+                    // ... existing HTML code ...
+                    setupFormToggles(); // Add this line right after the HTML is set in mainContent.innerHTML
+                    break;
+                case 'scan':
+                    mainContent.innerHTML = `
+                     <div class="card">
+    <h3>Scan Barcode or QR Code</h3>
+    <div class="mt-4">
+        <button class="btn btn-custom mr-2" id="start-scanner-btn" onclick="startMobileScanning()">Start Scanning</button>
+        <button class="btn btn-danger-custom mr-2" id="stop-scanner-btn" onclick="stopMobileScanning()" style="display:none;">Stop Scanning</button>
+        <label class="btn btn-custom">
+            Upload File <input type="file" id="barcode-upload" accept="image/*" hidden onchange="uploadAndScan(event)">
+        </label>
+    </div>
+    <div id="scanner-container">
+        <video id="scanner-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; display:none;"></video>
+        <div id="scanner-overlay">Press Start to Scan</div>
+    </div>
+    <div id="scan-results" class="mt-3" style="display:none;">
+        <h4>Scanned Data</h4>
+        <div style="max-height:200px; overflow-y:auto; border:1px solid #0F1828; border-radius:8px;">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="scan-data"></tbody>
+            </table>
+        </div>
+        <h4>Quality Check</h4>
+        <form id="quality-form">
+            <div class="form-group">
+                <label>Status</label>
+                <select class="form-control" id="quality_status" required>
+                    <option value="Pass">Pass</option>
+                    <option value="Fail">Fail</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Details</label>
+                <textarea class="form-control" id="quality_details" placeholder="Enter details (e.g., weight, potency)"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Tester</label>
+                <input type="text" class="form-control" id="quality_tester" placeholder="Your name" required>
+            </div>
+            <button type="submit" class="btn btn-custom">Save Check</button>
+        </form>
+    </div>
+</div>
+                    `;
+                    break;
+                case 'inventory':
+                    mainContent.innerHTML = `
+
+
+
+                       <div class="card">
+    <h3>Inventory List</h3>
+    <p class="text-center mt-3">View and manage all stored materials below.</p>
+    <div class="inventory-controls">
+        <input type="text" id="search-inventory" class="form-control" placeholder="Search by Material ID or Name">
+        <input type="date" id="filter-expiry" class="form-control filter-expiry" placeholder="Filter by Expiry Date">
+        <input type="text" id="filter-batch" class="form-control filter-batch" placeholder="Filter by Batch Number">
+        <input type="text" id="filter-supplier" class="form-control filter-supplier" placeholder="Filter by Supplier">
+        <input type="number" id="filter-quantity" class="form-control filter-quantity" placeholder="Filter by Quantity">
+        <div class="export-buttons">
+            <label class="btn btn-custom">
+                Import CSV <input type="file" id="import-csv" accept=".csv" hidden onchange="importCSV(event)">
+            </label>
+            <button class="btn btn-custom" onclick="exportToCSV()">Export CSV</button>
+            <button class="btn btn-custom" onclick="exportToExcel()">Export Excel</button>
+            <button class="btn btn-custom" onclick="exportToPDF()">Export PDF</button>
+            <button class="btn btn-custom" onclick="exportToWord()">Export Word</button>
+            <button class="btn btn-danger-custom" onclick="deleteAllConfirm()">Delete All</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+           <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Material ID</th>
+                                            <th>Name</th>
+                                            <th>Expiry Date</th>
+                                            <th>Batch No</th>
+                                            <th>Supplier</th>
+                                            <th>Quantity</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inventory-table"></tbody>
+                                </table>
+                            </div>
+        </table>
+    </div>
+</div>
+                    `;
+
+                    loadInventoryTable();
+                    document.getElementById("search-inventory").addEventListener("input", filterInventory);
+                    document.getElementById("filter-expiry").addEventListener("input", filterInventory);
+                    document.getElementById("filter-batch").addEventListener("input", filterInventory);
+                    document.getElementById("filter-supplier").addEventListener("input", filterInventory);
+                    document.getElementById("filter-quantity").addEventListener("input", filterInventory);
+                    break;
+                case 'notifications':
+                    mainContent.innerHTML = `
+                        <div class="card">
+                            <h3>Notifications</h3>
+                            <p class="text-center mt-3">Set thresholds and view alerts for your inventory.</p>
+                            <div class="form-group">
+                                <label>Low Stock Threshold</label>
+                                <input type="number" class="form-control" id="low-stock-threshold" min="1" value="10">
+                                <button class="btn btn-custom mt-2" onclick="saveThreshold()">Save Threshold</button>
+                            </div>
+                            <div id="notification-list" class="mt-4"></div>
+                        </div>
+                    `;
+                    loadNotifications();
+                    break;
+                case 'reports':
+                    mainContent.innerHTML = `
+                        <div class="card">
+                            <h3>Reports & Analytics</h3>
+                            <p class="text-center mt-3">Gain insights into your inventory trends.</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Expired Items</h4>
+                                    <canvas id="expired-chart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Low Stock Items</h4>
+                                    <canvas id="low-stock-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    loadReports();
+                    break;
+            }
+        }
+
+        // Load Inventory Table
+        function loadInventoryTable(materials = null) {
+            getAllMaterials((allMaterials) => {
+                const tbody = document.getElementById("inventory-table");
+                const filteredMaterials = materials || allMaterials;
+                tbody.innerHTML = filteredMaterials.length ? '' : '<tr><td colspan="7">No materials found.</td></tr>';
+                filteredMaterials.forEach(material => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${material.material_id}</td>
+                            <td>${material.material_name}</td>
+                            <td>${material.expiry_date}</td>
+                            <td>${material.batch_number}</td>
+                            <td>${material.supplier_details}</td>
+                            <td>${material.quantity}</td>
+                            <td class="actions">
+                                <button class="btn btn-action btn-warning-custom mr-2" onclick="editMaterial('${material.material_id}')">Edit</button>
+                                <button class="btn btn-action btn-danger-custom" onclick="deleteMaterialConfirm('${material.material_id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        // Filter Inventory with Enhanced Search
+        function filterInventory() {
+            const searchValue = document.getElementById("search-inventory").value.toLowerCase();
+            const expiryFilter = document.getElementById("filter-expiry").value;
+            const batchFilter = document.getElementById("filter-batch").value.toLowerCase();
+            const supplierFilter = document.getElementById("filter-supplier").value.toLowerCase();
+            const quantityFilter = document.getElementById("filter-quantity").value;
+
+            getAllMaterials((materials) => {
+                let filtered = materials;
+
+                if (searchValue) {
+                    filtered = filtered.filter(material =>
+                        material.material_id.toLowerCase().includes(searchValue) ||
+                        material.material_name.toLowerCase().includes(searchValue)
+                    );
+                }
+
+                if (expiryFilter) {
+                    filtered = filtered.filter(material => material.expiry_date === expiryFilter);
+                }
+
+                if (batchFilter) {
+                    filtered = filtered.filter(material => material.batch_number.toLowerCase().includes(batchFilter));
+                }
+
+                if (supplierFilter) {
+                    filtered = filtered.filter(material => material.supplier_details.toLowerCase().includes(supplierFilter));
+                }
+
+                if (quantityFilter) {
+                    filtered = filtered.filter(material => material.quantity === parseInt(quantityFilter));
+                }
+
+                loadInventoryTable(filtered);
+            });
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            getAllMaterials((materials) => {
+                if (!materials.length) {
+                    alert("No data to export!");
+                    return;
+                }
+                const csv = materials.map(m => `${m.material_id},${m.material_name},${m.expiry_date},${m.batch_number},${m.supplier_details},${m.quantity}`).join('\n');
+                const csvContent = "data:text/csv;charset=utf-8,Material ID,Name,Expiry Date,Batch No,Supplier,Quantity\n" + csv;
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "inventory.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        // Import CSV
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                const rows = text.split('\n').map(row => row.split(','));
+                const headers = rows[0];
+                if (headers.join(',') !== "Material ID,Name,Expiry Date,Batch No,Supplier,Quantity") {
+                    alert("Invalid CSV format. Expected headers: Material ID,Name,Expiry Date,Batch No,Supplier,Quantity");
+                    return;
+                }
+
+                const materials = rows.slice(1).map(row => ({
+                    material_id: row[0],
+                    material_name: row[1],
+                    expiry_date: row[2],
+                    batch_number: row[3],
+                    supplier_details: row[4],
+                    quantity: parseInt(row[5])
+                }));
+
+                materials.forEach(material => {
+                    if (material.material_id) {
+                        getMaterial(material.material_id, (existing) => {
+                            if (!existing) {
+                                addMaterial(material);
+                            }
+                        });
+                    }
+                });
+                setTimeout(() => loadSection('inventory'), 500);
+            };
+            reader.readAsText(file);
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            getAllMaterials((materials) => {
+                if (!materials.length) {
+                    alert("No data to export!");
+                    return;
+                }
+                const ws = XLSX.utils.json_to_sheet(materials, {
+                    header: ["material_id", "material_name", "expiry_date", "batch_number", "supplier_details", "quantity"]
+                });
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Inventory");
+                XLSX.writeFile(wb, "inventory.xlsx");
+            });
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            getAllMaterials((materials) => {
+                if (!materials.length) {
+                    alert("No data to export!");
+                    return;
+                }
+                const doc = new jsPDF();
+                doc.text("Inventory List", 20, 10);
+                doc.autoTable({
+                    startY: 20,
+                    head: [['Material ID', 'Name', 'Expiry Date', 'Batch No', 'Supplier', 'Quantity']],
+                    body: materials.map(m => [m.material_id, m.material_name, m.expiry_date, m.batch_number, m.supplier_details, m.quantity])
+                });
+                doc.save("inventory.pdf");
+            });
+        }
+
+        // Export to Word
+        function exportToWord() {
+            getAllMaterials((materials) => {
+                if (!materials.length) {
+                    alert("No data to export!");
+                    return;
+                }
+                const html = `
+                    <html>
+                    <body>
+                        <h1>Inventory List</h1>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Material ID</th>
+                                    <th>Name</th>
+                                    <th>Expiry Date</th>
+                                    <th>Batch No</th>
+                                    <th>Supplier</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${materials.map(m => `
+                                    <tr>
+                                        <td>${m.material_id}</td>
+                                        <td>${m.material_name}</td>
+                                        <td>${m.expiry_date}</td>
+                                        <td>${m.batch_number}</td>
+                                        <td>${m.supplier_details}</td>
+                                        <td>${m.quantity}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </body>
+                    </html>
+                `;
+                const blob = new Blob([html], { type: "application/msword" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "inventory.doc";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        // Delete All Confirmation
+        function deleteAllConfirm() {
+            if (confirm("Are you sure you want to delete all materials? This action cannot be undone.")) {
+                deleteAllMaterials();
+            }
+        }
+
+        // Barcode Generation
+        function generateBarcode(material_id) {
+            const barcodeDiv = document.getElementById("barcode");
+            barcodeDiv.innerHTML = '<svg id="barcode-svg"></svg>';
+            JsBarcode("#barcode-svg", material_id, {
+                format: "CODE128",
+                width: 2,
+                height: 120,
+                displayValue: true,
+                background: "#FFFFFF",
+                lineColor: "#0F1828",
+                font: "Lato",
+                fontSize: 22
+            });
+        }
+
+        // QR Code Generation
+        function generateQRCode(material) {
+            const qrcodeDiv = document.getElementById("qrcode");
+            qrcodeDiv.innerHTML = '<canvas id="qrcode-canvas"></canvas>';
+            const qrData = JSON.stringify(material);
+            QRCode.toCanvas(document.getElementById("qrcode-canvas"), qrData, {
+                width: 220,
+                height: 220,
+                color: {
+                    dark: "#0F1828",
+                    light: "#FFFFFF"
+                }
+            }, (error) => {
+                if (error) console.error(error);
+            });
+        }
+
+        // Print Barcode
+        function printBarcode() {
+            const barcodeSvg = document.getElementById("barcode-svg");
+            if (!barcodeSvg) {
+                alert("No barcode to print!");
+                return;
+            }
+            const printWindow = window.open('', '_blank', 'width=300,height=200');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Barcode</title>
+                    <style>
+                        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #FFFFFF; }
+                        svg { max-width: 100%; height: auto; }
+                    </style>
+                </head>
+                <body>
+                    ${barcodeSvg.outerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }
+
+        // Print QR Code
+        function printQRCode() {
+            const qrCanvas = document.getElementById("qrcode-canvas");
+            if (!qrCanvas) {
+                alert("No QR code to print!");
+                return;
+            }
+            const printWindow = window.open('', '_blank', 'width=300,height=300');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print QR Code</title>
+                    <style>
+                        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #FFFFFF; }
+                        img { max-width: 100%; height: auto; border: 1px solid #0F1828; }
+                    </style>
+                </head>
+                <body>
+                    <img src="${qrCanvas.toDataURL('image/png')}" alt="QR Code">
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }
+        // Scanning Setup
+        let scanning = false;
+        let videoStream = null;
+        let codeReader = null;
+
+        async function startMobileScanning() {
+            if (scanning) return;
+            scanning = true;
+
+            const scannerContainer = document.getElementById("scanner-container");
+            const overlay = document.getElementById("scanner-overlay");
+            const startBtn = document.getElementById("start-scanner-btn");
+            const stopBtn = document.getElementById("stop-scanner-btn");
+            const video = document.getElementById("scanner-video");
+
+            overlay.textContent = "Scanning... Align barcode or QR code within view";
+            startBtn.style.display = "none";
+            stopBtn.style.display = "inline-block";
+            video.style.display = "block";
+
+            try {
+                // Enhanced camera constraints for better barcode detection
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "environment",
+                        width: { ideal: 1280 }, // Lowered resolution for faster processing
+                        height: { ideal: 720 },
+                        focusMode: { ideal: "continuous" }, // Ensure continuous focus
+                        zoom: { ideal: 1.5 }, // Slight zoom to aid barcode readability
+                        frameRate: { ideal: 60 } // Higher frame rate for smoother scanning
+                    }
+                });
+                video.srcObject = videoStream;
+
+                codeReader = new ZXing.BrowserMultiFormatReader();
+                const hints = new Map();
+                hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+                    ZXing.BarcodeFormat.QR_CODE,
+                    ZXing.BarcodeFormat.CODE_128, // Prioritize CODE_128 for barcodes
+                    ZXing.BarcodeFormat.CODE_39,
+                    ZXing.BarcodeFormat.EAN_13,
+                    ZXing.BarcodeFormat.UPC_A,
+                    ZXing.BarcodeFormat.UPC_E
+                ]);
+                hints.set(ZXing.DecodeHintType.TRY_HARDER, true); // Increase decoding effort
+                hints.set(ZXing.DecodeHintType.ASSUME_GS1, true); // Support GS1 standards
+                hints.set(ZXing.DecodeHintType.CHARACTER_SET, "UTF-8"); // Ensure proper encoding
+
+                // Continuous scanning with timeout to avoid stopping prematurely
+                let lastScanTime = 0;
+                const scanCooldown = 2000; // 2-second cooldown between successful scans
+
+                codeReader.decodeFromVideoDevice(null, "scanner-video", (result, err) => {
+                    const currentTime = Date.now();
+                    if (result && (currentTime - lastScanTime > scanCooldown)) {
+                        handleScanResult(result.getText(), result.getBarcodeFormat());
+                        lastScanTime = currentTime; // Update last scan time
+                        overlay.textContent = `Detected ${result.getBarcodeFormat()}: ${result.getText()}`;
+                        setTimeout(() => {
+                            overlay.textContent = "Scanning... Align barcode or QR code within view";
+                        }, 2000); // Reset overlay message after 2 seconds
+                        // Do NOT stop scanning here to allow continuous operation
+                    }
+                    if (err && !(err instanceof ZXing.NotFoundException)) {
+                        console.error("Scanning error:", err);
+                        overlay.textContent = "Error scanning. Try adjusting the camera.";
+                    }
+                }, { hints });
+            } catch (err) {
+                console.error("Camera access error:", err);
+                stopMobileScanning();
+                alert("Failed to access camera: " + err.message);
+            }
+        }
+
+        function stopMobileScanning() {
+            if (!scanning) return;
+            scanning = false;
+
+            const overlay = document.getElementById("scanner-overlay");
+            const startBtn = document.getElementById("start-scanner-btn");
+            const stopBtn = document.getElementById("stop-scanner-btn");
+            const video = document.getElementById("scanner-video");
+
+            overlay.textContent = "Press Start to Scan";
+            startBtn.style.display = "inline-block";
+            stopBtn.style.display = "none";
+            video.style.display = "none";
+
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            if (codeReader) {
+                codeReader.reset();
+                codeReader = null;
+            }
+        }
+
+        // Leave handleScanResult and displayScanResult unchanged unless further tweaks are needed
+
+        function handleScanResult(data, type) {
+            const scanData = document.getElementById("scan-data");
+            const scanResults = document.getElementById("scan-results");
+            scanData.innerHTML += `<tr><td>${type}</td><td>${data}</td></tr>`; // Append to allow multiple scans
+            scanResults.style.display = "block";
+
+            let material = null;
+            try {
+                material = JSON.parse(data); // QR Code case
+            } catch (e) {
+                // Barcode case, assume data is material_id
+                getMaterial(data, (storedMaterial) => {
+                    if (storedMaterial) {
+                        material = storedMaterial;
+                    }
+                    displayScanResult(material, data, type);
+                });
+                return;
+            }
+            getMaterial(material.material_id, (storedMaterial) => {
+                if (storedMaterial) {
+                    material = storedMaterial;
+                }
+                displayScanResult(material, data, type);
+            });
+        }
+
+        function displayScanResult(material, rawData, type) {
+            const qualityForm = document.getElementById("quality-form");
+            qualityForm.onsubmit = (e) => {
+                e.preventDefault();
+                const status = document.getElementById("quality_status").value;
+                const details = document.getElementById("quality_details").value;
+                const tester = document.getElementById("quality_tester").value;
+                if (material && material.material_id) {
+                    addQualityCheck(material.material_id, status, details, tester);
+                }
+                qualityForm.reset();
+                document.getElementById("scan-results").style.display = "none"; // Reset for next scan
+            };
+            if (!material || !material.material_id) {
+                document.getElementById("scan-results").innerHTML += `<p class="text-warning">Material not found in inventory.</p>`;
+            }
+        }
+
+
+
+
+
+
+
+        function setupFormToggles() {
+            const toggles = {
+                toggleMaterialId: 'field-material-id',
+                toggleMaterialName: 'field-material-name',
+                toggleExpiryDate: 'field-expiry-date',
+                toggleBatchNumber: 'field-batch-number',
+                toggleSupplierDetails: 'field-supplier-details',
+                toggleQuantity: 'field-quantity',
+                toggleWeight: 'field-weight',
+                toggleLocation: 'field-location',
+                toggleColor: 'field-color'
+            };
+
+            Object.keys(toggles).forEach(toggleId => {
+                const toggle = document.getElementById(toggleId);
+                const savedState = localStorage.getItem(toggleId);
+                if (savedState !== null) {
+                    toggle.checked = savedState === 'true';
+                }
+                const fieldClass = toggles[toggleId];
+                const field = document.querySelector(`.${fieldClass}`);
+                field.style.display = toggle.checked ? 'block' : 'none';
+                field.querySelector('input').required = toggle.checked;
+
+                toggle.addEventListener('change', () => {
+                    field.style.display = toggle.checked ? 'block' : 'none';
+                    field.querySelector('input').required = toggle.checked;
+                    localStorage.setItem(toggleId, toggle.checked);
+                });
+            });
+        }
+
+        function uploadAndScan(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const codeReader = new ZXing.BrowserMultiFormatReader();
+                    const hints = new Map();
+                    hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+                    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+                        ZXing.BarcodeFormat.QR_CODE,
+                        ZXing.BarcodeFormat.CODE_128,
+                        ZXing.BarcodeFormat.CODE_39,
+                        ZXing.BarcodeFormat.EAN_13,
+                        ZXing.BarcodeFormat.UPC_A,
+                        ZXing.BarcodeFormat.UPC_E
+                    ]);
+                    codeReader.decodeFromImage(img, { hints }).then(result => {
+                        handleScanResult(result.getText(), result.getBarcodeFormat());
+                        document.getElementById("scan-results").innerHTML += `<img src="${e.target.result}" alt="Uploaded Image" style="max-width:100%; height:auto; margin-top:20px;">`;
+                    }).catch(err => {
+                        alert("No barcode or QR code detected in the uploaded image!");
+                    });
+                };
+
+
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Auto-start scanning on load
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.location.hash === "#scan") {
+                startMobileScanning();
+            }
+        });
+        // Display Material Details
+        function displayMaterialDetails(material) {
+            document.getElementById("material-details").innerHTML = `
+                <h4>Material Details</h4>
+                <p><strong>ID:</strong> ${material.material_id}</p>
+                <p><strong>Name:</strong> ${material.material_name}</p>
+                <p><strong>Expiry Date:</strong> ${material.expiry_date}</p>
+                <p><strong>Batch No:</strong> ${material.batch_number}</p>
+                <p><strong>Supplier:</strong> ${material.supplier_details}</p>
+                <p><strong>Quantity:</strong> ${material.quantity}</p>
+            `;
+        }
+
+        // Updated editMaterial to Include Quality Fields
+        function editMaterial(material_id) {
+            getMaterial(material_id, (material) => {
+                if (material) {
+                    document.getElementById("edit_material_id").value = material.material_id;
+                    document.getElementById("edit_material_name").value = material.material_name;
+                    document.getElementById("edit_expiry_date").value = material.expiry_date;
+                    document.getElementById("edit_batch_number").value = material.batch_number;
+                    document.getElementById("edit_supplier_details").value = material.supplier_details;
+                    document.getElementById("edit_quantity").value = material.quantity;
+                    document.getElementById("edit_quality_status").value = material.quality_checks?.[material.quality_checks.length - 1]?.status || "Pass";
+                    document.getElementById("edit_quality_details").value = material.quality_checks?.[material.quality_checks.length - 1]?.details || "";
+                    document.getElementById("edit_quality_tester").value = material.quality_checks?.[material.quality_checks.length - 1]?.tester || "";
+                    $('#editModal').modal('show');
+                }
+            });
+        }
+
+        // Updated Save Changes to Include Quality
+        document.getElementById("save-changes").addEventListener("click", () => {
+            const material = {
+                material_id: document.getElementById("edit_material_id").value,
+                material_name: document.getElementById("edit_material_name").value,
+                expiry_date: document.getElementById("edit_expiry_date").value,
+                batch_number: document.getElementById("edit_batch_number").value,
+                supplier_details: document.getElementById("edit_supplier_details").value,
+                quantity: parseInt(document.getElementById("edit_quantity").value),
+                quality_checks: getMaterial(document.getElementById("edit_material_id").value)?.quality_checks || []
+            };
+            const status = document.getElementById("edit_quality_status").value;
+            const details = document.getElementById("edit_quality_details").value;
+            const tester = document.getElementById("edit_quality_tester").value;
+            if (status && tester) {
+                material.quality_checks.push({
+                    status: status,
+                    details: details,
+                    tester: tester,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            updateMaterial(material);
+            $('#editModal').modal('hide');
+            loadSection('inventory');
+        });
+
+        // Delete Material Confirmation
+        function deleteMaterialConfirm(material_id) {
+            if (confirm("Are you sure you want to delete this material?")) {
+                deleteMaterial(material_id);
+            }
+        }
+
+        // Notification Functions
+        let lowStockThreshold = 10;
+
+        function saveThreshold() {
+            lowStockThreshold = parseInt(document.getElementById("low-stock-threshold").value) || 10;
+            alert("Low stock threshold set to " + lowStockThreshold);
+            checkNotifications();
+        }
+
+        function checkNotifications() {
+            getAllMaterials((materials) => {
+                const today = new Date();
+                const thirtyDaysFromNow = new Date();
+                thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+                const expiringSoon = materials.filter(m => {
+                    const expiry = new Date(m.expiry_date);
+                    return expiry <= thirtyDaysFromNow && expiry >= today;
+                });
+
+                const lowStock = materials.filter(m => m.quantity <= lowStockThreshold);
+
+                if (expiringSoon.length > 0 || lowStock.length > 0) {
+                    let alertMessage = "";
+                    if (expiringSoon.length > 0) {
+                        alertMessage += "Materials nearing expiry:\n" + expiringSoon.map(m => `${m.material_name} (Expires: ${m.expiry_date})`).join('\n') + "\n\n";
+                    }
+                    if (lowStock.length > 0) {
+                        alertMessage += "Materials with low stock:\n" + lowStock.map(m => `${m.material_name} (Quantity: ${m.quantity})`).join('\n');
+                    }
+                    alert(alertMessage);
+                }
+
+                if (document.getElementById("notification-list")) {
+                    loadNotifications(materials);
+                }
+            });
+        }
+
+        function loadNotifications(materials = null) {
+            getAllMaterials((allMaterials) => {
+                const mats = materials || allMaterials;
+                const today = new Date();
+                const thirtyDaysFromNow = new Date();
+                thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+                const expiringSoon = mats.filter(m => {
+                    const expiry = new Date(m.expiry_date);
+                    return expiry <= thirtyDaysFromNow && expiry >= today;
+                });
+
+                const lowStock = mats.filter(m => m.quantity <= lowStockThreshold);
+
+                const notificationList = document.getElementById("notification-list");
+                notificationList.innerHTML = '';
+
+                if (expiringSoon.length === 0 && lowStock.length === 0) {
+                    notificationList.innerHTML = '<p>No notifications at this time.</p>';
+                } else {
+                    if (expiringSoon.length > 0) {
+                        notificationList.innerHTML += '<h4>Expiring Soon (within 30 days)</h4><ul>' +
+                            expiringSoon.map(m => `<li>${m.material_name} (Expires: ${m.expiry_date})</li>`).join('') + '</ul>';
+                    }
+                    if (lowStock.length > 0) {
+                        notificationList.innerHTML += '<h4>Low Stock (Threshold: ' + lowStockThreshold + ')</h4><ul>' +
+                            lowStock.map(m => `<li>${m.material_name} (Quantity: ${m.quantity})</li>`).join('') + '</ul>';
+                    }
+                }
+            });
+        }
+
+        // Reports and Analytics
+        function loadReports() {
+            getAllMaterials((materials) => {
+                const today = new Date().toISOString().split('T')[0];
+                const expired = materials.filter(m => m.expiry_date < today);
+                const lowStock = materials.filter(m => m.quantity <= lowStockThreshold);
+
+                const expiredCtx = document.getElementById('expired-chart').getContext('2d');
+                new Chart(expiredCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: expired.map(m => m.material_name),
+                        datasets: [{
+                            label: 'Expired Items',
+                            data: expired.map(m => 1),
+                            backgroundColor: '#C61B37'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true, title: { display: true, text: 'Count' } }
+                        }
+                    }
+                });
+
+                const lowStockCtx = document.getElementById('low-stock-chart').getContext('2d');
+                new Chart(lowStockCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: lowStock.map(m => m.material_name),
+                        datasets: [{
+                            label: 'Low Stock Items',
+                            data: lowStock.map(m => m.quantity),
+                            backgroundColor: '#0F1828'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true, title: { display: true, text: 'Quantity' } }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Chatbot Functionality
+        const chatbotContainer = document.getElementById("chatbot-container");
+        const chatbotMessages = document.getElementById("chatbot-messages");
+        const chatbotInput = document.getElementById("chatbot-input");
+        const chatbotSend = document.getElementById("chatbot-send");
+        const chatbotToggle = document.getElementById("chatbot-toggle");
+
+        chatbotToggle.addEventListener("click", () => {
+            chatbotContainer.classList.toggle("hidden");
+        });
+
+        chatbotSend.addEventListener("click", sendMessage);
+        chatbotInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
+        });
+
+        function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, "user-message");
+            chatbotInput.value = "";
+
+            setTimeout(() => processInventoryQuery(message), 500);
+        }
+
+        function addMessage(text, className) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `chat-message ${className}`;
+            messageDiv.textContent = text;
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function formatMaterialDetails(material) {
+            return `Material Details:
+- ID: ${material.material_id}
+- Name: ${material.material_name}
+- Expiry Date: ${material.expiry_date}
+- Batch Number: ${material.batch_number}
+- Supplier: ${material.supplier_details}
+- Quantity: ${material.quantity}`;
+        }
+
+        function processInventoryQuery(query) {
+            const lowerQuery = query.toLowerCase();
+
+            const materialIdMatch = lowerQuery.match(/(?:material|id|item)\s*(\w+)/i);
+            const materialId = materialIdMatch ? materialIdMatch[1] : null;
+
+            const dateMatch = lowerQuery.match(/\b(\d{4}-\d{2}-\d{2})\b/);
+            const date = dateMatch ? dateMatch[1] : null;
+
+            const quotedMatch = lowerQuery.match(/['"]([^'"]+)['"]/);
+            const quotedText = quotedMatch ? quotedMatch[1] : null;
+
+            if (materialId && (lowerQuery.includes("material") || lowerQuery.includes("id") || lowerQuery.includes("item"))) {
+                getMaterial(materialId, (material) => {
+                    if (material) {
+                        addMessage(formatMaterialDetails(material), "bot-message");
+                    } else {
+                        addMessage(`Material ${materialId} not found in the inventory.`, "bot-message");
+                    }
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("name") && quotedText) {
+                getAllMaterials((materials) => {
+                    const matchedMaterial = materials.find(m => m.material_name.toLowerCase() === quotedText.toLowerCase());
+                    if (matchedMaterial) {
+                        addMessage(formatMaterialDetails(matchedMaterial), "bot-message");
+                    } else {
+                        addMessage(`No material found with the name "${quotedText}".`, "bot-message");
+                    }
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("batch") && quotedText) {
+                getAllMaterials((materials) => {
+                    const matchedMaterial = materials.find(m => m.batch_number.toLowerCase() === quotedText.toLowerCase());
+                    if (matchedMaterial) {
+                        addMessage(formatMaterialDetails(matchedMaterial), "bot-message");
+                    } else {
+                        addMessage(`No material found with batch number "${quotedText}".`, "bot-message");
+                    }
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("supplier") && quotedText) {
+                getAllMaterials((materials) => {
+                    const supplierMaterials = materials.filter(m => m.supplier_details.toLowerCase().includes(quotedText.toLowerCase()));
+                    if (supplierMaterials.length > 0) {
+                        let response = `Materials from supplier "${quotedText}":\n`;
+                        supplierMaterials.forEach(m => {
+                            response += formatMaterialDetails(m) + "\n";
+                        });
+                        addMessage(response, "bot-message");
+                    } else {
+                        addMessage(`No materials found from supplier "${quotedText}".`, "bot-message");
+                    }
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("how many") && lowerQuery.includes("supplier") && quotedText) {
+                getAllMaterials((materials) => {
+                    const supplierCount = materials.filter(m => m.supplier_details.toLowerCase().includes(quotedText.toLowerCase())).length;
+                    addMessage(`There are ${supplierCount} materials from supplier "${quotedText}".`, "bot-message");
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("expir") && date) {
+                getAllMaterials((materials) => {
+                    const expiringMaterials = materials.filter(m => m.expiry_date < date);
+                    if (expiringMaterials.length > 0) {
+                        let response = `Materials expiring before ${date}:\n`;
+                        expiringMaterials.forEach(m => {
+                            response += formatMaterialDetails(m) + "\n";
+                        });
+                        addMessage(response, "bot-message");
+                    } else {
+                        addMessage(`No materials are expiring before ${date}.`, "bot-message");
+                    }
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("list") || lowerQuery.includes("all") || lowerQuery.includes("inventory")) {
+                getAllMaterials((materials) => {
+                    if (materials.length > 0) {
+                        let response = "Here’s the current inventory list:\n";
+                        materials.forEach(m => {
+                            response += `- ${m.material_id}: ${m.material_name} (Expires: ${m.expiry_date}, Quantity: ${m.quantity})\n`;
+                        });
+                        addMessage(response, "bot-message");
+                    } else {
+                        addMessage("The inventory is currently empty.", "bot-message");
+                    }
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("how many") || lowerQuery.includes("count")) {
+                getAllMaterials((materials) => {
+                    addMessage(`There are ${materials.length} items in the inventory.`, "bot-message");
+                });
+                return;
+            }
+
+            if (lowerQuery.includes("expired") || lowerQuery.includes("due")) {
+                const today = new Date().toISOString().split('T')[0];
+                getAllMaterials((materials) => {
+                    const expired = materials.filter(m => m.expiry_date < today);
+                    if (expired.length > 0) {
+                        let response = "The following items have expired:\n";
+                        expired.forEach(m => {
+                            response += formatMaterialDetails(m) + "\n";
+                        });
+                        addMessage(response, "bot-message");
+                    } else {
+                        addMessage("No items have expired as of today.", "bot-message");
+                    }
+                });
+                return;
+            }
+
+            addMessage("I'm not sure what you mean. Try asking about a specific material (e.g., 'Tell me about material123', 'Find material with name \"ABC\"') or use queries like 'list all materials', 'how many items', 'materials from supplier \"XYZ\"', or 'materials expiring before 2025-12-31'.", "bot-message");
+        }
+    </script>
+</body>
+
+</html>

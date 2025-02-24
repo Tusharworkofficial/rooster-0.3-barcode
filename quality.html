@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Pro - Quality</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #EFF2F7;
+            color: #0F1828;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: #0F1828;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            color: #C61B37;
+            font-size: 1.8rem;
+        }
+
+        .nav-link {
+            color: #FFFFFF !important;
+            font-weight: 400;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #C61B37 !important;
+        }
+
+        .quality-container {
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            margin-top: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: #FFFFFF;
+        }
+
+        .table thead th {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            border: none;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:hover {
+            background-color: #C61B37;
+            color: #FFFFFF;
+        }
+
+        .btn-custom {
+            background-color: #C61B37;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #A3152D;
+            color: #FFFFFF;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        footer {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            padding: 3rem 2rem;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        footer .footer-brand i {
+            margin-right: 10px;
+            color: #C61B37;
+            font-size: 1.8rem;
+        }
+
+        footer .footer-links,
+        footer .footer-contact {
+            flex: 1;
+            min-width: 200px;
+            margin: 0 1rem;
+        }
+
+        footer h5 {
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #C61B37;
+        }
+
+        footer .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="index.html"><i class="fas fa-box-open"></i> Inventory Pro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#generate">Generate</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#scan">Scan</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#inventory">Inventory</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#notifications">Notifications</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#reports">Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="quality.html">Quality</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Navbar remains unchanged -->
+    <div class="container quality-container">
+        <h2 class="text-center mb-4">SMK's Globals Quality Control</h2>
+
+        <!-- Lab Testing -->
+        <div class="card">
+            <h3>Finished Product Testing</h3>
+            <form id="lab-test-form" class="mt-4">
+                <div class="form-group">
+                    <label>Batch ID</label>
+                    <input type="text" class="form-control" id="lab_batch_id" required>
+                </div>
+                <div class="form-group">
+                    <label>Potency (%)</label>
+                    <input type="number" class="form-control" id="potency" required>
+                </div>
+                <div class="form-group">
+                    <label>Appearance</label>
+                    <select class="form-control" id="appearance" required>
+                        <option value="Pass">Pass</option>
+                        <option value="Fail">Fail</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tester</label>
+                    <input type="text" class="form-control" id="lab_tester" required>
+                </div>
+                <button type="submit" class="btn btn-custom">Save Test</button>
+            </form>
+        </div>
+
+        <!-- Batch Record Review -->
+        <div class="card">
+            <h3>Batch Record Review</h3>
+            <div class="form-group">
+                <label>Batch ID</label>
+                <input type="text" class="form-control" id="review_batch_id">
+                <button class="btn btn-custom mt-2" onclick="loadBatchReview()">Load Batch</button>
+            </div>
+            <div id="batch-details" class="mt-3"></div>
+            <button class="btn btn-custom mt-2" id="approve-btn" style="display:none;"
+                onclick="approveBatch()">Approve</button>
+        </div>
+
+        <!-- Recurring Issue Tracking -->
+        <div class="card">
+            <h3>Recurring Issues</h3>
+            <div id="issues-list" class="mt-3"></div>
+        </div>
+
+        <!-- Final Release -->
+        <div class="card">
+            <h3>Final Release</h3>
+            <div class="form-group">
+                <label>Batch ID</label>
+                <input type="text" class="form-control" id="release_batch_id">
+                <button class="btn btn-custom mt-2" onclick="loadRelease()">Load Batch</button>
+            </div>
+            <div id="release-details" class="mt-3"></div>
+            <button class="btn btn-custom mt-2" id="release-btn" style="display:none;"
+                onclick="releaseBatch()">Release</button>
+            <button class="btn btn-danger-custom mt-2" id="hold-btn" style="display:none;"
+                onclick="holdBatch()">Hold</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-box-open"></i> Inventory Pro
+            </div>
+            <div class="footer-links">
+                <h5>Quick Links</h5>
+                <a href="index.html#home">Home</a>
+                <a href="index.html#generate">Generate Barcode & QR</a>
+                <a href="index.html#scan">Scan Barcode</a>
+                <a href="index.html#inventory">Inventory List</a>
+                <a href="index.html#notifications">Notifications</a>
+                <a href="index.html#reports">Reports</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="quality.html">Quality</a>
+            </div>
+            <div class="footer-contact">
+                <h5>Contact Us</h5>
+                <a href="mailto:support@inventorypro.com">support@inventorypro.com</a>
+                <a href="tel:+1234567890">+1 (234) 567-890</a>
+                <a href="#">123 Business St, Tech City</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Inventory Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let db;
+        const request = indexedDB.open("inventoryDB", 2);
+        request.onupgradeneeded = function (event) {
+            db = event.target.result;
+            if (!db.objectStoreNames.contains("materials")) {
+                const objectStore = db.createObjectStore("materials", { keyPath: "material_id" });
+            }
+        };
+        request.onsuccess = function (event) {
+            db = event.target.result;
+            loadQualityPage();
+        };
+
+        function getMaterial(material_id, callback) {
+            const transaction = db.transaction(["materials"], "readonly");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.get(material_id);
+            request.onsuccess = () => callback(request.result);
+        }
+
+        function updateMaterial(material) {
+            const transaction = db.transaction(["materials"], "readwrite");
+            const objectStore = transaction.objectStore("materials");
+            objectStore.put(material);
+        }
+
+        function getAllMaterials(callback) {
+            const transaction = db.transaction(["materials"], "readonly");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.getAll();
+            request.onsuccess = () => callback(request.result);
+        }
+
+        document.getElementById("lab-test-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const material_id = document.getElementById("lab_batch_id").value;
+            const test = {
+                potency: document.getElementById("potency").value,
+                appearance: document.getElementById("appearance").value,
+                tester: document.getElementById("lab_tester").value,
+                timestamp: new Date().toISOString()
+            };
+            getMaterial(material_id, (material) => {
+                material.lab_tests = material.lab_tests || [];
+                material.lab_tests.push(test);
+                updateMaterial(material);
+                alert("Lab test saved!");
+                e.target.reset();
+                loadIssues();
+            });
+        });
+
+        function loadBatchReview() {
+            const material_id = document.getElementById("review_batch_id").value;
+            getMaterial(material_id, (material) => {
+                if (material) {
+                    document.getElementById("batch-details").innerHTML = `
+                        <p><strong>ID:</strong> ${material.material_id}</p>
+                        <p><strong>Raw Check:</strong> ${JSON.stringify(material.raw_material_check)}</p>
+                        <p><strong>In-Process:</strong> ${JSON.stringify(material.in_process_checks)}</p>
+                        <p><strong>Lab Tests:</strong> ${JSON.stringify(material.lab_tests)}</p>
+                    `;
+                    document.getElementById("approve-btn").style.display = "block";
+                } else {
+                    alert("Batch not found!");
+                }
+            });
+        }
+
+        function approveBatch() {
+            const material_id = document.getElementById("review_batch_id").value;
+            getMaterial(material_id, (material) => {
+                material.bmr_status = "Approved";
+                updateMaterial(material);
+                alert("Batch approved!");
+                document.getElementById("approve-btn").style.display = "none";
+            });
+        }
+
+        function loadIssues() {
+            getAllMaterials((materials) => {
+                const issuesList = document.getElementById("issues-list");
+                const issues = materials.filter(m => (m.lab_tests || []).some(t => t.appearance === "Fail"));
+                issuesList.innerHTML = issues.length ? issues.map(m => `<p>${m.material_id}: Failed Appearance</p>`).join('') : "<p>No recurring issues.</p>";
+            });
+        }
+
+        function loadRelease() {
+            const material_id = document.getElementById("release_batch_id").value;
+            getMaterial(material_id, (material) => {
+                if (material && material.bmr_status === "Approved") {
+                    document.getElementById("release-details").innerHTML = `<p><strong>ID:</strong> ${material.material_id} - Ready for Release</p>`;
+                    document.getElementById("release-btn").style.display = "block";
+                    document.getElementById("hold-btn").style.display = "block";
+                } else {
+                    alert("Batch not approved or not found!");
+                }
+            });
+        }
+
+        function releaseBatch() {
+            const material_id = document.getElementById("release_batch_id").value;
+            getMaterial(material_id, (material) => {
+                material.status = "Released";
+                updateMaterial(material);
+                alert("Batch released!");
+                document.getElementById("release-btn").style.display = "none";
+                document.getElementById("hold-btn").style.display = "none";
+            });
+        }
+
+        function holdBatch() {
+            const material_id = document.getElementById("release_batch_id").value;
+            getMaterial(material_id, (material) => {
+                material.status = "Held";
+                updateMaterial(material);
+                alert("Batch held!");
+                document.getElementById("release-btn").style.display = "none";
+                document.getElementById("hold-btn").style.display = "none";
+            });
+        }
+
+        function loadQualityPage() {
+            loadIssues();
+        }
+    </script>
+</body>
+
+</html>
