@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Pro - Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Fonts: Lato -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #EFF2F7 0%, #DDE4EF 100%);
+            color: #0F1828;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #0F1828 0%, #1A2A44 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #FFFFFF !important;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand i {
+            margin-right: 12px;
+            color: #C61B37;
+            font-size: 2rem;
+        }
+
+        .nav-link {
+            color: #FFFFFF !important;
+            font-weight: 400;
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+            transition: color 0.3s ease, background 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: #C61B37 !important;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        .dashboard-container {
+            margin-top: 90px;
+            padding: 30px 20px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.03);
+        }
+
+        .stat-box h4 {
+            font-weight: 700;
+            color: #0F1828;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #C61B37;
+            margin: 0;
+        }
+
+        .stat-box i {
+            font-size: 2rem;
+            color: #C61B37;
+            margin-bottom: 10px;
+        }
+
+        .barcode-section {
+            margin-top: 30px;
+        }
+
+        .barcode-section h3 {
+            font-weight: 900;
+            color: #0F1828;
+            margin-bottom: 20px;
+        }
+
+        .recent-barcodes {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .recent-barcodes::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .recent-barcodes::-webkit-scrollbar-thumb {
+            background: #C61B37;
+            border-radius: 3px;
+        }
+
+        .barcode-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #F8FAFC;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .barcode-item:hover {
+            background: #EDEFF5;
+        }
+
+        .barcode-item span {
+            font-weight: 400;
+            color: #0F1828;
+        }
+
+        .barcode-item a {
+            color: #C61B37;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .barcode-item a:hover {
+            text-decoration: underline;
+        }
+
+        canvas {
+            max-height: 350px;
+            width: 100%;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #0F1828 0%, #1A2A44 100%);
+            color: #FFFFFF;
+            padding: 3rem 2rem;
+            margin-top: 50px;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        footer .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer .footer-brand {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        footer .footer-brand i {
+            margin-right: 12px;
+            color: #C61B37;
+            font-size: 2rem;
+        }
+
+        footer .footer-links,
+        footer .footer-contact {
+            flex: 1;
+            min-width: 180px;
+            margin: 0 1rem;
+        }
+
+        footer h5 {
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #C61B37;
+        }
+
+        footer .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 992px) {
+            .navbar-nav {
+                padding: 10px 0;
+            }
+
+            .nav-link {
+                padding: 0.6rem 1rem;
+                font-size: 1rem;
+            }
+
+            .dashboard-container {
+                padding: 20px 15px;
+            }
+
+            .stat-box {
+                padding: 15px;
+                margin: 10px 0;
+            }
+
+            .stat-box p {
+                font-size: 1.5rem;
+            }
+
+            canvas {
+                max-height: 250px;
+            }
+
+            .barcode-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 15px;
+            }
+
+            .barcode-item a {
+                margin-top: 5px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+
+            .navbar-brand i {
+                font-size: 1.6rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .stat-box h4 {
+                font-size: 1rem;
+            }
+
+            .stat-box p {
+                font-size: 1.2rem;
+            }
+
+            .stat-box i {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .barcode-section h3 {
+                font-size: 1.3rem;
+            }
+
+            footer .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            footer .footer-links,
+            footer .footer-contact {
+                margin: 1rem 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="index.html"><i class="fas fa-box-open"></i> Inventory Pro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#generate">Generate</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#scan">Scan</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#inventory">Inventory</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#notifications">Notifications</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#reports">Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="quality.html">Quality</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="container dashboard-container">
+        <h2 class="text-center mb-5" style="font-weight: 900; color: #0F1828;">Inventory Dashboard</h2>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="stat-box">
+                    <i class="fas fa-boxes"></i>
+                    <h4>Total Materials</h4>
+                    <p id="total-materials">0</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="stat-box">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h4>Pending Checks</h4>
+                    <p id="pending-checks">0</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="stat-box">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Approved Batches</h4>
+                    <p id="approved-batches">0</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="stat-box">
+                    <i class="fas fa-truck"></i>
+                    <h4>Released Batches</h4>
+                    <p id="released-batches">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <h3 style="font-weight: 700; color: #0F1828;">Stock Distribution</h3>
+                    <canvas id="stock-chart"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <h3 style="font-weight: 700; color: #0F1828;">Expiry Trends</h3>
+                    <canvas id="expiry-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barcode Section -->
+        <div class="barcode-section">
+            <h3 class="text-center">Barcode Insights</h3>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="stat-box">
+                        <i class="fas fa-barcode"></i>
+                        <h4>Barcodes Generated</h4>
+                        <p id="barcodes-generated">0</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="stat-box">
+                        <i class="fas fa-qrcode"></i>
+                        <h4>Barcodes Scanned</h4>
+                        <p id="barcodes-scanned">0</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="stat-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Barcode Health Issues</h4>
+                        <p id="barcode-health">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <h3 style="font-weight: 700; color: #0F1828;">Barcode Usage Trend</h3>
+                        <canvas id="barcode-trend-chart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <h3 style="font-weight: 700; color: #0F1828;">Recent Barcode Activity</h3>
+                        <div class="recent-barcodes" id="recent-barcodes">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-box-open"></i> Inventory Pro
+            </div>
+            <div class="footer-links">
+                <h5>Quick Links</h5>
+                <a href="index.html#home">Home</a>
+                <a href="index.html#generate">Generate Barcode & QR</a>
+                <a href="index.html#scan">Scan Barcode</a>
+                <a href="index.html#inventory">Inventory List</a>
+                <a href="index.html#notifications">Notifications</a>
+                <a href="index.html#reports">Reports</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+            <div class="footer-contact">
+                <h5>Contact Us</h5>
+                <a href="mailto:support@inventorypro.com">support@inventorypro.com</a>
+                <a href="tel:+1234567890">+1 (234) 567-890</a>
+                <a href="#">123 Business St, Tech City</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Inventory Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let db;
+        const request = indexedDB.open("inventoryDB", 2);
+
+        request.onupgradeneeded = function (event) {
+            db = event.target.result;
+            if (!db.objectStoreNames.contains("materials")) {
+                const objectStore = db.createObjectStore("materials", { keyPath: "material_id" });
+                objectStore.createIndex("barcode_generated", "barcode_generated", { unique: false });
+                objectStore.createIndex("barcode_scanned", "barcode_scanned", { unique: false });
+            }
+        };
+
+        request.onsuccess = function (event) {
+            db = event.target.result;
+            loadDashboard();
+        };
+
+        function getAllMaterials(callback) {
+            const transaction = db.transaction(["materials"], "readonly");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.getAll();
+            request.onsuccess = () => callback(request.result);
+        }
+
+        function loadDashboard() {
+            getAllMaterials((materials) => {
+                const today = new Date().toISOString().split('T')[0];
+                const thirtyDaysFromNow = new Date();
+                thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+                // Basic Stats
+                const totalMaterials = materials.length;
+                const pendingChecks = materials.filter(m => !m.bmr_status).length;
+                const approvedBatches = materials.filter(m => m.bmr_status === "Approved").length;
+                const releasedBatches = materials.filter(m => m.status === "Released").length;
+
+                document.getElementById("total-materials").textContent = totalMaterials;
+                document.getElementById("pending-checks").textContent = pendingChecks;
+                document.getElementById("approved-batches").textContent = approvedBatches;
+                document.getElementById("released-batches").textContent = releasedBatches;
+
+                // Barcode Stats
+                const barcodesGenerated = materials.filter(m => m.material_id).length; // Assuming every material has a barcode
+                const barcodesScanned = materials.filter(m => m.last_scanned).length; // Add a last_scanned field in your data
+                const barcodeHealthIssues = materials.filter(m => m.expiry_date < today || m.quantity <= 10).length;
+
+                document.getElementById("barcodes-generated").textContent = barcodesGenerated;
+                document.getElementById("barcodes-scanned").textContent = barcodesScanned;
+                document.getElementById("barcode-health").textContent = barcodeHealthIssues;
+
+                // Stock Distribution Chart
+                const stockChart = new Chart(document.getElementById("stock-chart"), {
+                    type: "pie",
+                    data: {
+                        labels: ["In Stock", "Low Stock"],
+                        datasets: [{
+                            data: [totalMaterials - barcodeHealthIssues, barcodeHealthIssues],
+                            backgroundColor: ["#0F1828", "#C61B37"],
+                            borderColor: "#FFFFFF",
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: "top" } }
+                    }
+                });
+
+                // Expiry Trends Chart
+                const expiringSoon = materials.filter(m => new Date(m.expiry_date) <= thirtyDaysFromNow && new Date(m.expiry_date) >= new Date()).length;
+                const expiryChart = new Chart(document.getElementById("expiry-chart"), {
+                    type: "bar",
+                    data: {
+                        labels: ["Within 30 Days", "Beyond 30 Days"],
+                        datasets: [{
+                            label: "Materials",
+                            data: [expiringSoon, totalMaterials - expiringSoon],
+                            backgroundColor: "#C61B37",
+                            borderColor: "#0F1828",
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true, title: { display: true, text: "Count" } } },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+
+                // Barcode Usage Trend Chart
+                const barcodeTrendChart = new Chart(document.getElementById("barcode-trend-chart"), {
+                    type: "line",
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                        datasets: [{
+                            label: "Barcodes Generated",
+                            data: [10, 15, 13, 20, 25, barcodesGenerated],
+                            borderColor: "#C61B37",
+                            backgroundColor: "rgba(198, 27, 55, 0.2)",
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true } },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+
+                // Recent Barcode Activity
+                const recentBarcodes = document.getElementById("recent-barcodes");
+                const recentMaterials = materials.slice(-5).reverse(); // Last 5 materials
+                recentBarcodes.innerHTML = recentMaterials.length ?
+                    recentMaterials.map(m => `
+                        <div class="barcode-item">
+                            <span>${m.material_id} - ${m.material_name}</span>
+                            <a href="index.html#inventory" onclick="viewMaterial('${m.material_id}')">View</a>
+                        </div>
+                    `).join('') :
+                    '<p>No recent barcode activity.</p>';
+            });
+        }
+
+        function viewMaterial(material_id) {
+            // Placeholder for viewing material details; could redirect or open a modal
+            console.log("Viewing material:", material_id);
+        }
+    </script>
+</body>
+
+</html>
